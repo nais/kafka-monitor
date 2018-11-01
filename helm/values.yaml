@@ -1,0 +1,54 @@
+name: kafka-monitor
+
+image:
+  repository: navikt/kafka-monitor
+  tag: 1
+  pullPolicy: IfNotPresent
+
+zookeeper_connect: zookeeper1:1234,zookeeper2:1234,zookeeper3:1234
+bootstrap_servers: broker1:1234,broker2:1234,broker3:1234
+security_protocol: SASL_SSL
+sasl_mechanism: PLAIN
+
+topic:
+  name: kafka-monitor
+  create: false
+  replication_factor: 1
+  partitions_to_brokers_ratio: 2
+
+produce_delay: 100
+
+ingress:
+  enabled: false
+  httpHost: kafka-monitor.localdomain
+  jolokiaHost: kafka-monitor-jolokia.localdomain
+
+# override url for jolokia
+# jolokiaUrl: https://kafka-monitor-jolokia.localdomain/jolokia
+
+# override serviceaccount name
+# serviceaccount_name: my-kafka-monitor
+
+# # optional base64 encoded jks truststore when using SSL (create base64 encoded string with 'base64 -w0')
+# truststore:
+#   jks: base64encodedJavaTrustStore
+#   password: trustStorePassword
+
+# optional jaas config
+
+# # jaas config from values
+# jaasConfig: "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"username\" password=\"password\";"
+
+# # ..or init container to get jaas config from vault (will be used instead of jaasConfig value)
+vault_init:
+  enabled: false
+  image:
+    repository: navikt/vks
+    tag: 24
+  vks:
+    vault_addr: https://vault.nais.local
+    auth_path: /kubernetes/nais
+    kv_path: /kv/nais/kafka-monitor/default
+    vault_role: kafka-monitor
+    secret_dest_path: /var/run/secrets/nais.io/vault
+

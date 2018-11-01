@@ -1,0 +1,41 @@
+{{- if .Values.ingress.enabled -}}
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  labels:
+    app: {{ template "kafka_monitor.name" . }}
+    component: {{ .Values.name }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "kafka_monitor.fullname" . }}-http
+spec:
+  rules:
+  - host: {{ .Values.ingress.httpHost }}
+    http:
+      paths:
+      - backend:
+          serviceName: {{ template "kafka_monitor.fullname" . }}
+          servicePort: 8000
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  labels:
+    app: {{ template "kafka_monitor.name" . }}
+    component: {{ .Values.name }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "kafka_monitor.fullname" . }}-jolokia
+spec:
+  rules:
+  - host: {{ .Values.ingress.jolokiaHost }}
+    http:
+      paths:
+      - backend:
+          serviceName: {{ template "kafka_monitor.fullname" . }}
+          servicePort: 8778
+{{- end }}
+
