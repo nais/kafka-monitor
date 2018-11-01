@@ -5,6 +5,9 @@ image:
   tag: 2
   pullPolicy: IfNotPresent
 
+podAnnotations:
+  nais.io/logformat: simple
+
 zookeeper_connect: zookeeper1:1234,zookeeper2:1234,zookeeper3:1234
 bootstrap_servers: broker1:1234,broker2:1234,broker3:1234
 security_protocol: SASL_SSL
