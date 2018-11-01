@@ -19,7 +19,7 @@ spec:
     metadata:
 {{- if .Values.podAnnotations }}
       annotations:
-{{ toYaml .Values.kafka_monitor.podAnnotations | indent 8 }}
+{{ toYaml .Values.podAnnotations | indent 8 }}
 {{- end }}
       labels:
         app: {{ template "kafka_monitor.name" . }}
@@ -71,6 +71,10 @@ spec:
             value: {{ .Values.security_protocol }}
           - name: SASL_MECHANISM
             value: {{ .Values.sasl_mechanism }}
+          - name: LOG_LEVEL
+            value: {{ .Values.log_level }}
+          - name: LOG_LEVEL_KAFKA
+            value: {{ .Values.log_level_kafka }}
           - name: PRODUCE_DELAY
             value: "{{ .Values.produce_delay }}"
           - name: MONITOR_TOPIC

@@ -2,13 +2,16 @@ name: kafka-monitor
 
 image:
   repository: navikt/kafka-monitor
-  tag: 1
+  tag: 2
   pullPolicy: IfNotPresent
 
 zookeeper_connect: zookeeper1:1234,zookeeper2:1234,zookeeper3:1234
 bootstrap_servers: broker1:1234,broker2:1234,broker3:1234
 security_protocol: SASL_SSL
 sasl_mechanism: PLAIN
+
+log_level: INFO
+log_level_kafka: WARN
 
 topic:
   name: kafka-monitor
