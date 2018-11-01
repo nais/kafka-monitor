@@ -8,6 +8,8 @@ FROM openjdk:8-jre-slim
 EXPOSE 8000 8778
 
 ENV KAFKA_HEAP_OPTS "-Xmx1024M"
+ENV LOG_LEVEL INFO
+ENV LOG_LEVEL_KAFKA WARN
 
 ENV CREATE_TOPIC false
 ENV MONITOR_TOPIC kafka-monitor
@@ -28,6 +30,7 @@ COPY --from=builder /home/gradle/kafka-monitor/config/log4j.properties /kafka-mo
 COPY --from=builder /home/gradle/kafka-monitor/build /kafka-monitor/build
 COPY --from=builder /home/gradle/kafka-monitor/webapp /kafka-monitor/webapp
 
+COPY log4j.properties.in /kafka-monitor/config
 COPY kafka-monitor.properties.in /kafka-monitor/config
 COPY start.sh /kafka-monitor/bin
 
