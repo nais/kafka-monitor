@@ -17,8 +17,12 @@ spec:
       release: {{ .Release.Name }}
   template:
     metadata:
-{{- if .Values.podAnnotations }}
       annotations:
+        nais.io/logformat: simple
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+        prometheus.io/path: "/"
+{{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
 {{- end }}
       labels:
