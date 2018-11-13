@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: {{ template "kafka_monitor.fullname" . }}
   labels:
@@ -57,6 +57,7 @@ spec:
       containers:
       - name: {{ .Values.name }}
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        terminationGracePeriodSeconds: 0
 {{- if or .Values.vault_init.enabled .Values.truststore }}
         volumeMounts:
 {{- if .Values.vault_init.enabled }}
