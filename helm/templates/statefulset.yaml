@@ -8,6 +8,7 @@ metadata:
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
+    team: {{ .Values.team }}
 spec:
   replicas: 1
   selector:
@@ -29,6 +30,7 @@ spec:
         app: {{ template "kafka_monitor.name" . }}
         component: {{ .Values.name }}
         release: {{ .Release.Name }}
+        team: {{ .Values.team }}
 {{- if .Values.podLabels }}
 {{ toYaml .Values.podLabels | indent 8 }}
 {{- end }}
