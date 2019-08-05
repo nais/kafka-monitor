@@ -2,10 +2,12 @@ name: kafka-monitor
 
 image:
   repository: navikt/kafka-monitor
-  tag: 3
+  tag: 4
   pullPolicy: IfNotPresent
 
 team: kafka
+
+runAsUser: 10001
 
 podLabels: {}
 podAnnotations: {}

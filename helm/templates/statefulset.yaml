@@ -60,8 +60,10 @@ spec:
       - name: {{ .Values.name }}
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         terminationGracePeriodSeconds: 0
-{{- if or .Values.vault_init.enabled .Values.truststore }}
         volumeMounts:
+        - name: config
+          mountPath: /config
+{{- if or .Values.vault_init.enabled .Values.truststore }}
 {{- if .Values.vault_init.enabled }}
         - mountPath: {{ .Values.vault_init.vks.secret_dest_path }}
           name: vault-secrets
@@ -120,8 +122,17 @@ spec:
         - name: jolokia
           containerPort: 8778
           protocol: TCP
-{{- if or .Values.vault_init.enabled .Values.truststore }}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ["all"]
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: {{ .Values.runAsUser }}
       volumes:
+      - name: config
+        emptyDir: {}
+{{- if or .Values.vault_init.enabled .Values.truststore }}
 {{- if .Values.vault_init.enabled }}
       - emptyDir:
           medium: Memory
