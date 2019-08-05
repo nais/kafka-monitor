@@ -9,6 +9,7 @@
     "topic-management.replicationFactor" : ${REPLICATION_FACTOR},
     "topic-management.partitionsToBrokersRatio" : ${PARTITIONS_TO_BROKERS_RATIO},
     "topic-management.rebalance.interval.ms" : 600000,
+    "topic-management.preferred.leader.election.check.interval.ms" : 300000,
     "topic-management.topicFactory.props": {
     },
     "topic-management.topic.props": {

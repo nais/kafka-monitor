@@ -1,15 +1,15 @@
 FROM gradle:jdk8 as builder
 
-RUN git clone --branch 2.0.0 https://github.com/linkedin/kafka-monitor.git
+RUN git clone --branch 2.0.4 https://github.com/linkedin/kafka-monitor.git
 WORKDIR /home/gradle/kafka-monitor
 RUN gradle build
 RUN mkdir prometheus
-RUN wget https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.3.1/jmx_prometheus_javaagent-0.3.1.jar -O prometheus/jmx_prometheus_javaagent-0.3.1.jar
+RUN wget https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.12.0/jmx_prometheus_javaagent-0.12.0.jar -O prometheus/jmx_prometheus_javaagent-0.12.0.jar
 
 FROM openjdk:8-jre-slim
 EXPOSE 8000 8080 8778
 
-ENV KAFKA_OPTS "-javaagent:/kafka-monitor/prometheus/jmx_prometheus_javaagent-0.3.1.jar=8080:/kafka-monitor/config/prometheus-exporter.yaml"
+ENV KAFKA_OPTS "-javaagent:/kafka-monitor/prometheus/jmx_prometheus_javaagent-0.12.0.jar=8080:/kafka-monitor/config/prometheus-exporter.yaml"
 ENV KAFKA_HEAP_OPTS "-Xmx1024M"
 ENV LOG_LEVEL INFO
 ENV LOG_LEVEL_KAFKA WARN
@@ -30,10 +30,11 @@ ENV JOLOKIA_URL ""
 COPY --from=builder /home/gradle/kafka-monitor/bin/kafka-monitor-start.sh /kafka-monitor/bin/kafka-monitor-start.sh
 COPY --from=builder /home/gradle/kafka-monitor/bin/kmf-run-class.sh /kafka-monitor/bin/kmf-run-class.sh
 COPY --from=builder /home/gradle/kafka-monitor/config/prometheus-exporter.yaml /kafka-monitor/config/prometheus-exporter.yaml
-COPY --from=builder /home/gradle/kafka-monitor/config/log4j.properties /kafka-monitor/config/log4j.properties
 COPY --from=builder /home/gradle/kafka-monitor/build /kafka-monitor/build
 COPY --from=builder /home/gradle/kafka-monitor/prometheus /kafka-monitor/prometheus
 COPY --from=builder /home/gradle/kafka-monitor/webapp /kafka-monitor/webapp
+COPY --from=builder /home/gradle/kafka-monitor/webapp/index.html /kafka-monitor/config/index.html.in
+RUN mkdir -p /config && ln -f -s /config/index.html /kafka-monitor/webapp/index.html
 
 COPY log4j.properties.in /kafka-monitor/config
 COPY kafka-monitor.properties.in /kafka-monitor/config
