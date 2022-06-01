@@ -11,6 +11,7 @@ metadata:
     team: {{ .Values.team }}
 spec:
   replicas: 1
+  serviceName: kafka-monitor
   selector:
     matchLabels:
       app: {{ template "kafka_monitor.name" . }}
@@ -36,6 +37,7 @@ spec:
 {{- end }}
     spec:
       serviceAccountName: {{ template "kafka_monitor.serviceaccountname" . }}
+      terminationGracePeriodSeconds: 0
 {{- if .Values.vault_init.enabled }}
       initContainers:
       - name: vks
@@ -59,7 +61,6 @@ spec:
       containers:
       - name: {{ .Values.name }}
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
-        terminationGracePeriodSeconds: 0
         volumeMounts:
         - name: config
           mountPath: /config

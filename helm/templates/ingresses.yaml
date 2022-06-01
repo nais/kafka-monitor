@@ -1,6 +1,6 @@
 {{- if .Values.ingress.enabled -}}
 ---
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   labels:
@@ -12,15 +12,22 @@ metadata:
     team: {{ .Values.team }}
   name: {{ template "kafka_monitor.fullname" . }}-http
 spec:
+  {{- if .Values.ingress.ingressClassName }}
+  ingressClassName: {{ .Values.ingress.ingressClassName }}
+  {{- end }}
   rules:
   - host: {{ .Values.ingress.httpHost }}
     http:
       paths:
       - backend:
-          serviceName: {{ template "kafka_monitor.fullname" . }}
-          servicePort: 8000
+          service:
+            name: {{ template "kafka_monitor.fullname" . }}
+            port:
+              number: 8000
+        path: /
+        pathType: Prefix
 ---
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   labels:
@@ -31,12 +38,18 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ template "kafka_monitor.fullname" . }}-jolokia
 spec:
+  {{- if .Values.ingress.ingressClassName }}
+  ingressClassName: {{ .Values.ingress.ingressClassName }}
+  {{- end }}
   rules:
   - host: {{ .Values.ingress.jolokiaHost }}
     http:
       paths:
       - backend:
-          serviceName: {{ template "kafka_monitor.fullname" . }}
-          servicePort: 8778
+          service:
+            name: {{ template "kafka_monitor.fullname" . }}
+            port:
+              number: 8778
+        path: /
+        pathType: Prefix
 {{- end }}
-

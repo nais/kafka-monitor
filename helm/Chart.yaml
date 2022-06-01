@@ -1,7 +1,7 @@
 apiVersion: v1
 name: kafka-monitor
 description: Kafka monitor
-version: 1.6.0
+version: 1.7.0
 sources:
   - https://github.com/nais/kafka-monitor
   - https://github.com/linkedin/kafka-monitor
